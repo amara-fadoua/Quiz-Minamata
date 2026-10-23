@@ -1,0 +1,1272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MINAMATA DISEASE — Test Your Knowledge</title>
+<meta name="description" content="Interactive quiz on Minamata disease and methylmercury neurotoxicity.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* =========================================================
+   1. DESIGN TOKENS
+   ========================================================= */
+:root{
+  --navy:#082F43;
+  --teal:#126078;
+  --turq:#1AA2AE;
+  --cyan:#8BE3E5;
+  --white:#F3F8FA;
+  --deep:#041c2a;
+  --good:#58d6a8;
+  --bad:#ff8d8d;
+  --glass:rgba(8,47,67,.55);
+  --glass-strong:rgba(6,36,52,.78);
+  --line:rgba(139,227,229,.45);
+  --serif:'Playfair Display',Georgia,'Times New Roman',serif;
+  --sans:'Inter','Segoe UI',system-ui,-apple-system,Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;min-height:100vh;display:flex;flex-direction:column;
+  background:var(--deep);color:var(--white);
+  font-family:var(--sans);line-height:1.55;overflow-x:hidden;
+}
+button{font:inherit;color:inherit;cursor:pointer}
+svg{display:block}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:8px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* =========================================================
+   2. UNDERWATER BACKGROUND
+   Optional: put a photo named "ocean.jpg" next to index.html.
+   If it is missing, the CSS gradients below are used.
+   ========================================================= */
+.ocean{
+  position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;
+  background:
+    url('ocean.jpg') center/cover no-repeat,
+    radial-gradient(ellipse 70% 38% at 50% -6%,rgba(139,227,229,.55),transparent 70%),
+    radial-gradient(ellipse 50% 40% at 15% 30%,rgba(26,162,174,.18),transparent 70%),
+    linear-gradient(180deg,#0e6a82 0%,#0a4c64 20%,#082F43 52%,#04202f 80%,#02121c 100%);
+}
+.ocean::after{ /* vignette */
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 50% 45%,transparent 35%,rgba(2,12,20,.7) 100%);
+}
+.rays{
+  position:absolute;top:-10%;left:-10%;width:120%;height:75%;
+  background:
+    repeating-linear-gradient(104deg,transparent 0 70px,rgba(139,227,229,.10) 70px 110px,transparent 110px 190px,rgba(139,227,229,.06) 190px 215px);
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,transparent 90%);
+          mask-image:linear-gradient(180deg,#000 0%,transparent 90%);
+  animation:rays 14s ease-in-out infinite alternate;
+}
+@keyframes rays{from{opacity:.55;transform:translateX(-1.5%)}to{opacity:1;transform:translateX(1.5%)}}
+.surface{
+  position:absolute;top:0;left:0;right:0;height:14%;
+  background:repeating-radial-gradient(ellipse at 50% -40%,rgba(255,255,255,.10) 0 2px,transparent 2px 26px);
+  -webkit-mask-image:linear-gradient(180deg,#000,transparent);mask-image:linear-gradient(180deg,#000,transparent);
+  opacity:.6;
+}
+.seabed-left,.seabed-right{position:absolute;bottom:0;height:46vh;max-height:430px}
+.seabed-left{left:0;width:min(46vw,620px)}
+.seabed-right{right:0;width:min(40vw,540px)}
+.seabed-left svg,.seabed-right svg{width:100%;height:100%}
+.kelp{transform-origin:50% 100%;animation:sway 6s ease-in-out infinite alternate}
+.kelp.d2{animation-duration:8s;animation-delay:-2s}
+@keyframes sway{from{transform:rotate(-2.5deg)}to{transform:rotate(2.5deg)}}
+.fish-big{position:absolute;left:-2%;top:42%;width:min(24vw,340px);opacity:.95;animation:drift 18s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate(0,0)}to{transform:translate(34px,-12px)}}
+.school{position:absolute;left:0;top:16%;width:min(36vw,520px);opacity:.28}
+.brain-deco{
+  position:absolute;right:-3%;top:11%;height:78vh;max-height:760px;opacity:.9;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 18%);mask-image:linear-gradient(90deg,transparent 0,#000 18%);
+}
+.brain-deco svg{height:100%;width:auto}
+.bubble{
+  position:absolute;bottom:-30px;border-radius:50%;
+  border:1px solid rgba(139,227,229,.55);
+  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.35),rgba(139,227,229,.06) 60%,transparent);
+  animation:rise linear infinite;
+}
+@keyframes rise{
+  0%{transform:translate(0,0);opacity:0}
+  10%{opacity:.9}
+  100%{transform:translate(18px,-112vh);opacity:0}
+}
+
+/* =========================================================
+   3. LAYOUT: TOP BAR, SCREENS, FOOTER
+   ========================================================= */
+.topbar{
+  position:relative;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  padding:22px clamp(16px,4vw,52px) 16px;
+}
+.topbar::after{
+  content:"";position:absolute;left:clamp(16px,4vw,52px);right:clamp(16px,4vw,52px);bottom:0;height:1px;
+  background:linear-gradient(90deg,var(--line),rgba(139,227,229,.15) 70%,transparent);
+}
+.brand{display:flex;align-items:center;gap:14px;font-size:.95rem;letter-spacing:.14em;text-transform:uppercase;font-weight:500}
+.brand svg{width:44px;height:30px;color:var(--turq)}
+.nav-right{display:flex;align-items:center;gap:16px;font-size:.92rem;font-weight:300;letter-spacing:.03em}
+.nav-right .sep{width:1px;height:34px;background:var(--line)}
+.nav-right svg{width:34px;height:34px;color:var(--cyan)}
+
+main{position:relative;z-index:5;flex:1;display:flex;flex-direction:column}
+.screen{display:none;flex:1;animation:screenIn .55s ease both}
+.screen.active{display:flex;flex-direction:column}
+@keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.site-footer{position:relative;z-index:5;padding:8px 16px 26px;text-align:center}
+.credit{display:flex;align-items:center;justify-content:center;gap:18px;font-size:1rem;font-weight:300;letter-spacing:.02em}
+.credit::before,.credit::after{content:"";height:1px;width:min(18vw,220px);background:linear-gradient(90deg,transparent,var(--line))}
+.credit::after{transform:scaleX(-1)}
+.credit-wave{width:48px;height:14px;margin:0 auto 4px;color:var(--turq)}
+
+/* =========================================================
+   4. LANDING PAGE
+   ========================================================= */
+.home{align-items:center;justify-content:center;text-align:center;padding:clamp(16px,3vh,40px) 20px 10px}
+.title{
+  margin:0;font-family:var(--serif);font-weight:600;
+  font-size:clamp(2.3rem,7.2vw,5.6rem);line-height:1.05;letter-spacing:.015em;text-transform:uppercase;
+  background:linear-gradient(180deg,#fff 30%,var(--cyan) 130%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 6px 40px rgba(26,162,174,.35);
+}
+.subtitle{
+  margin:clamp(10px,2vh,22px) 0 0;color:var(--turq);font-weight:400;
+  font-size:clamp(.85rem,2.2vw,1.45rem);letter-spacing:clamp(.22em,1.2vw,.62em);padding-left:.6em;
+}
+.title-wave{width:130px;height:22px;margin:clamp(14px,2.5vh,26px) auto 0;color:var(--turq)}
+.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,3vw,36px);width:min(100%,820px);margin:clamp(22px,4vh,40px) auto 0}
+.mode-card{
+  position:relative;overflow:hidden;text-align:center;
+  padding:30px 20px 26px;min-height:270px;border-radius:22px;
+  border:1px solid var(--line);
+  background:linear-gradient(160deg,rgba(18,96,120,.5),rgba(8,47,67,.55) 60%,rgba(8,47,67,.7));
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  box-shadow:0 10px 40px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.12);
+  transition:transform .3s ease,border-color .3s,box-shadow .3s,background .3s;
+}
+.mode-card:hover{transform:translateY(-5px);border-color:var(--cyan);box-shadow:0 16px 50px rgba(26,162,174,.28),inset 0 1px 0 rgba(255,255,255,.18)}
+.mode-card[aria-pressed="true"]{
+  border-color:var(--cyan);border-width:2px;
+  background:linear-gradient(160deg,rgba(26,162,174,.42),rgba(18,96,120,.55) 60%,rgba(8,47,67,.7));
+  box-shadow:0 0 0 4px rgba(139,227,229,.15),0 16px 50px rgba(26,162,174,.35);
+}
+.mode-card .icon{width:76px;height:76px;margin:0 auto 14px;color:var(--cyan)}
+.mode-card h2{margin:0;font-family:var(--serif);font-size:clamp(1.5rem,3vw,2rem);font-weight:600;letter-spacing:.02em;text-transform:uppercase}
+.mode-card p{margin:6px 0 0;font-weight:300;color:rgba(243,248,250,.9);font-size:1.02rem}
+.mode-card .go{
+  position:relative;z-index:2;width:46px;height:46px;margin:18px auto 0;border-radius:50%;
+  display:grid;place-items:center;background:rgba(26,162,174,.55);border:1px solid var(--line);transition:background .3s,transform .3s;
+}
+.mode-card:hover .go,.mode-card[aria-pressed="true"] .go{background:var(--turq);transform:scale(1.08)}
+.mode-card .go svg{width:22px;height:22px}
+.mode-card .wave-deco{position:absolute;left:0;right:0;bottom:0;height:60px;opacity:.5;color:var(--turq)}
+.check{
+  position:absolute;top:14px;right:14px;width:26px;height:26px;border-radius:50%;background:var(--cyan);color:var(--navy);
+  display:grid;place-items:center;opacity:0;transform:scale(.6);transition:.25s;
+}
+.mode-card[aria-pressed="true"] .check{opacity:1;transform:none}
+.check svg{width:16px;height:16px}
+
+.btn-start{
+  display:inline-flex;align-items:center;justify-content:center;gap:22px;margin-top:clamp(22px,4vh,38px);
+  min-width:min(100%,330px);padding:20px 46px;border:0;border-radius:999px;
+  font-weight:600;letter-spacing:.3em;font-size:1.05rem;color:#04202f;padding-left:calc(46px + .3em);
+  background:linear-gradient(90deg,#27e1ea,#0fb8f2);
+  box-shadow:0 0 0 1px rgba(255,255,255,.25) inset,0 12px 40px rgba(26,200,230,.45);
+  transition:transform .25s,box-shadow .25s,filter .25s;
+}
+.btn-start:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 0 0 1px rgba(255,255,255,.35) inset,0 16px 50px rgba(26,200,230,.65);filter:brightness(1.06)}
+.btn-start:active{transform:translateY(0) scale(.99)}
+.btn-start svg{width:26px;height:26px}
+.home-hint{min-height:1.5em;margin:12px 0 0;color:var(--cyan);font-size:.92rem;font-weight:300}
+
+.corner-quote{
+  position:fixed;left:clamp(16px,3vw,50px);bottom:34px;z-index:5;padding-left:16px;
+  border-left:2px solid var(--turq);font-family:var(--serif);font-style:italic;font-weight:400;
+  font-size:1.05rem;line-height:1.35;color:rgba(243,248,250,.88);
+}
+.corner-icons{position:fixed;right:clamp(16px,3vw,50px);bottom:34px;z-index:5;display:flex;align-items:center;gap:16px;color:var(--cyan)}
+.corner-icons svg{width:30px;height:30px}
+.corner-icons i{width:1px;height:34px;background:var(--line)}
+body:not([data-screen="home"]) .corner-quote,
+body:not([data-screen="home"]) .corner-icons{display:none}
+
+/* =========================================================
+   5. MODE-SELECTION DIALOG
+   ========================================================= */
+.overlay{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(2,14,22,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.overlay.open{display:flex;animation:screenIn .3s ease both}
+.dialog{width:min(100%,460px);padding:30px 26px;border-radius:22px;text-align:center;border:1px solid var(--line);background:var(--glass-strong);box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.dialog h2{margin:0 0 6px;font-family:var(--serif);font-size:1.6rem}
+.dialog p{margin:0 0 20px;font-weight:300}
+.dialog .btn{width:100%;margin-top:10px}
+
+/* =========================================================
+   6. GENERIC BUTTONS & PANELS
+   ========================================================= */
+.panel{
+  width:min(100%,860px);margin:0 auto;padding:clamp(18px,3.2vw,34px);border-radius:24px;
+  border:1px solid var(--line);background:var(--glass-strong);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  box-shadow:0 16px 60px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  padding:13px 24px;border-radius:999px;border:1px solid var(--line);
+  background:rgba(18,96,120,.45);font-weight:500;letter-spacing:.04em;
+  transition:transform .2s,background .2s,border-color .2s,box-shadow .2s,opacity .2s;
+}
+.btn:hover:not(:disabled){background:rgba(26,162,174,.5);border-color:var(--cyan);transform:translateY(-2px)}
+.btn:disabled{opacity:.38;cursor:not-allowed}
+.btn svg{width:18px;height:18px}
+.btn-primary{background:linear-gradient(90deg,#27e1ea,#0fb8f2);color:#04202f;border-color:transparent;font-weight:600;box-shadow:0 8px 28px rgba(26,200,230,.35)}
+.btn-primary:hover:not(:disabled){background:linear-gradient(90deg,#4aeaf1,#34c6f6);box-shadow:0 12px 36px rgba(26,200,230,.55)}
+.btn-ghost{background:transparent;padding:9px 16px;font-size:.9rem}
+
+/* =========================================================
+   7. QUIZ SCREEN
+   ========================================================= */
+.quiz-wrap{padding:clamp(12px,3vh,34px) 16px 10px}
+.quiz-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.mode-tag{font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:var(--cyan)}
+.score-pill{padding:6px 16px;border-radius:999px;border:1px solid var(--line);background:rgba(26,162,174,.2);font-size:.92rem}
+.score-pill b{color:var(--cyan);font-size:1.05rem}
+.meta-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:18px 0 8px;font-size:.92rem}
+.counter{font-weight:500;letter-spacing:.06em}
+.timer-box{display:flex;align-items:center;gap:14px}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.88rem;font-weight:300;user-select:none}
+.switch input{position:absolute;opacity:0;width:1px;height:1px}
+.switch .track{width:38px;height:22px;border-radius:999px;border:1px solid var(--line);background:rgba(8,47,67,.8);position:relative;transition:background .25s}
+.switch .track::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--cyan);transition:transform .25s}
+.switch input:checked + .track{background:var(--turq)}
+.switch input:checked + .track::after{transform:translateX(16px);background:#fff}
+.switch input:focus-visible + .track{outline:3px solid var(--cyan);outline-offset:3px}
+.timer-pill{min-width:74px;text-align:center;padding:4px 12px;border-radius:999px;border:1px solid var(--line);font-variant-numeric:tabular-nums;font-weight:500}
+.timer-pill.warn{border-color:var(--bad);color:var(--bad);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(255,141,141,.18)}}
+.bar{height:8px;border-radius:99px;background:rgba(139,227,229,.15);overflow:hidden}
+.bar > div{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--turq),var(--cyan));transition:width .45s ease}
+.bar.time{height:4px;margin-top:8px}
+.bar.time > div{transition:width 1s linear;background:linear-gradient(90deg,#27e1ea,#58d6a8)}
+.bar.time.low > div{background:var(--bad)}
+.question{margin:26px 0 20px;font-family:var(--serif);font-weight:500;font-size:clamp(1.3rem,3.2vw,1.85rem);line-height:1.3}
+.question:focus{outline:none}
+.options{display:grid;gap:12px}
+.option{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:14px 18px;border-radius:16px;
+  border:1px solid rgba(139,227,229,.35);background:rgba(18,96,120,.3);font-size:1.02rem;
+  transition:transform .2s,background .2s,border-color .2s;
+}
+.option .letter{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--cyan);color:var(--cyan);font-weight:600;font-size:.9rem;transition:.2s}
+.option:hover:not(:disabled){background:rgba(26,162,174,.35);border-color:var(--cyan);transform:translateX(4px)}
+.option[aria-checked="true"]{background:rgba(26,162,174,.5);border-color:var(--cyan);box-shadow:0 0 0 2px rgba(139,227,229,.3)}
+.option[aria-checked="true"] .letter{background:var(--cyan);color:var(--navy)}
+.option:disabled{cursor:default;color:var(--white);opacity:1}
+.option.correct{background:rgba(88,214,168,.22);border-color:var(--good)}
+.option.correct .letter{background:var(--good);border-color:var(--good);color:#03281d}
+.option.wrong{background:rgba(255,141,141,.18);border-color:var(--bad)}
+.option.wrong .letter{background:var(--bad);border-color:var(--bad);color:#3a0a0a}
+.option.dim{opacity:.62}
+.tf-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.tf-btn{
+  padding:26px 14px;border-radius:18px;border:1px solid var(--line);background:rgba(18,96,120,.35);
+  font-family:var(--serif);font-size:1.6rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;gap:12px;transition:transform .2s,background .2s,border-color .2s;
+}
+.tf-btn svg{width:26px;height:26px}
+.tf-btn:hover:not(:disabled){background:rgba(26,162,174,.45);border-color:var(--cyan);transform:translateY(-3px)}
+.tf-btn:disabled{cursor:default;color:var(--white)}
+.tf-btn.correct{background:rgba(88,214,168,.22);border-color:var(--good)}
+.tf-btn.wrong{background:rgba(255,141,141,.18);border-color:var(--bad)}
+.tf-btn.dim{opacity:.6}
+.feedback{margin-top:20px;padding:16px 18px;border-radius:16px;border:1px solid;animation:screenIn .4s ease both}
+.feedback.good{border-color:var(--good);background:rgba(88,214,168,.12)}
+.feedback.bad{border-color:var(--bad);background:rgba(255,141,141,.1)}
+.feedback .verdict{margin:0 0 4px;font-weight:600;font-size:1.05rem}
+.feedback.good .verdict{color:var(--good)}
+.feedback.bad .verdict{color:var(--bad)}
+.feedback p{margin:4px 0 0;font-weight:300}
+.feedback .answer-line{font-weight:500}
+.nav-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:24px;flex-wrap:wrap}
+.nav-row .spacer{flex:1}
+.key-hint{margin:16px 0 0;text-align:center;font-size:.78rem;font-weight:300;color:rgba(243,248,250,.65)}
+
+/* =========================================================
+   8. RESULTS SCREEN
+   ========================================================= */
+.result-wrap{padding:clamp(12px,3vh,34px) 16px 10px}
+.result-head{text-align:center}
+.ring{position:relative;width:170px;height:170px;margin:0 auto 14px}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .bg{stroke:rgba(139,227,229,.18)}
+.ring .fg{stroke:url(#ringGrad);stroke-linecap:round;transition:stroke-dashoffset 1.2s ease}
+.ring .pct{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-size:2.4rem;font-weight:600}
+.badge{display:inline-block;padding:8px 22px;border-radius:999px;border:1px solid var(--cyan);color:var(--cyan);background:rgba(26,162,174,.18);letter-spacing:.2em;text-transform:uppercase;font-size:.85rem;font-weight:600}
+.result-head h2{margin:14px 0 6px;font-family:var(--serif);font-size:clamp(1.6rem,4vw,2.3rem)}
+.result-head p{margin:0 auto;max-width:560px;font-weight:300}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+.stat{padding:14px 8px;text-align:center;border-radius:16px;border:1px solid var(--line);background:rgba(18,96,120,.3)}
+.stat b{display:block;font-family:var(--serif);font-size:1.7rem}
+.stat span{font-size:.8rem;letter-spacing:.14em;text-transform:uppercase;font-weight:300}
+.stat.g b{color:var(--good)}.stat.r b{color:var(--bad)}
+.result-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:6px 0 26px}
+.review h3{font-family:var(--serif);font-size:1.4rem;margin:0 0 12px;padding-top:18px;border-top:1px solid var(--line)}
+.review-item{padding:14px 16px;margin-bottom:12px;border-radius:16px;border:1px solid;font-size:.96rem}
+.review-item.good{border-color:rgba(88,214,168,.6);background:rgba(88,214,168,.08)}
+.review-item.bad{border-color:rgba(255,141,141,.6);background:rgba(255,141,141,.07)}
+.review-item .rq{margin:0 0 8px;font-weight:600}
+.review-item p{margin:3px 0;font-weight:300}
+.review-item p strong{font-weight:500}
+.review-item .exp{margin-top:8px;color:var(--cyan)}
+
+/* =========================================================
+   9. RESPONSIVE & MOTION
+   ========================================================= */
+@media (max-width:900px){
+  .brain-deco{opacity:.35;right:-18%}
+  .fish-big{opacity:.55}
+  .corner-quote{display:none}
+  .corner-icons{display:none}
+}
+@media (max-width:620px){
+  .nav-right span{display:none}
+  .brand{font-size:.78rem;letter-spacing:.1em}
+  .brand svg{width:34px}
+  .cards{grid-template-columns:1fr}
+  .mode-card{min-height:0;padding:22px 16px 20px}
+  .mode-card .icon{width:56px;height:56px}
+  .mode-card .go{margin-top:12px}
+  .btn-start{padding:17px 30px;letter-spacing:.22em;gap:14px}
+  .tf-row{grid-template-columns:1fr 1fr;gap:10px}
+  .tf-btn{font-size:1.15rem;padding:20px 8px}
+  .stats{gap:8px}
+  .credit::before,.credit::after{width:8vw}
+  .key-hint{display:none}
+  .nav-row .btn{padding:12px 16px}
+}
+@media (max-height:700px) and (min-width:621px){
+  .cards{margin-top:18px}
+  .mode-card{min-height:210px;padding:18px}
+  .mode-card .icon{width:54px;height:54px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+</head>
+
+<body data-screen="home">
+
+<!-- Reusable SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-wave" viewBox="0 0 60 36" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+      <path d="M3 8c6-8 11-8 17 0s11 8 17 0 11-8 20 0"/>
+      <path d="M3 18c6-8 11-8 17 0s11 8 17 0 11-8 20 0"/>
+      <path d="M3 28c6-8 11-8 17 0s11 8 17 0 11-8 20 0"/>
+    </symbol>
+    <symbol id="i-wave-small" viewBox="0 0 130 22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+      <path d="M4 14c10-14 20-14 30 0s20 14 30 0M64 14c10-14 20-14 30 0s20 14 30 0" />
+      <path d="M52 6c7 10 14 10 26 0" opacity=".7"/>
+    </symbol>
+    <symbol id="i-brain" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <g id="brain-half">
+        <path d="M24 8c-3-4-10-3-12 2-4 0-7 4-5 8-3 2-3 7 1 9 0 5 5 8 9 6 2 3 7 3 7-1V8z"/>
+        <path d="M15 19c3 0 5 2 9 2M13 29c3-1 6 0 8 3M17 12c0 3 2 4 4 4"/>
+      </g>
+      <use href="#brain-half" transform="matrix(-1 0 0 1 48 0)"/>
+      <path d="M24 41v4"/>
+    </symbol>
+    <symbol id="i-clipboard" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="12" y="10" width="40" height="48" rx="5"/>
+      <path d="M24 10V7a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3v3"/>
+      <rect x="24" y="8" width="16" height="6" rx="2"/>
+      <path d="M19 26l3 3 5-6M19 38l3 3 5-6M19 50l3 3 5-6" />
+      <path d="M33 26h13M33 38h13M33 50h13"/>
+    </symbol>
+    <symbol id="i-head" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M26 56V46c-6-3-10-8-10-14 0-3 2-5 1-7l-4-6c-1-2 1-3 3-3 2-6 8-10 15-10 10 0 17 7 17 17 0 6-3 10-7 12v12"/>
+      <path d="M31 17c-4 0-8 3-8 7 0 2 1 4 3 4M30 25c3-1 6 0 8 2M40 14c3 0 6 3 6 7s-3 6-6 6M35 20c2 0 3 1 3 3"/>
+    </symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 12h16M14 6l6 6-6 6"/>
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 12H4M10 6l-6 6 6 6"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M5 12.5l4.5 4.5L19 7.5"/>
+    </symbol>
+    <symbol id="i-cross" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round">
+      <path d="M6 6l12 12M18 6L6 18"/>
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 26C4 14 12 5 27 5c0 14-7 22-18 21"/><path d="M6 26C12 18 17 14 22 11"/>
+    </symbol>
+    <symbol id="i-drop" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 4c5 7 9 11 9 16a9 9 0 0 1-18 0c0-5 4-9 9-16z"/><path d="M12 21c0 2 1.5 3.5 3.5 3.8"/>
+    </symbol>
+    <symbol id="i-flask" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4h8M13 4v8L5 25a2.5 2.5 0 0 0 2.2 3.8h17.6A2.5 2.5 0 0 0 27 25l-8-13V4"/><path d="M9 21h14"/>
+    </symbol>
+    <symbol id="fish-s" viewBox="0 0 60 24">
+      <path d="M2 12C12 2 30 2 44 11l14-8-3 9 3 9-14-8C30 22 12 22 2 12z" fill="currentColor"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ============ UNDERWATER SCENE (decorative) ============ -->
+<div class="ocean" aria-hidden="true">
+  <div class="rays"></div>
+  <div class="surface"></div>
+
+  <!-- distant school of fish -->
+  <svg class="school" viewBox="0 0 520 220" style="color:#7fc9d6">
+    <use href="#fish-s" x="30"  y="30"  width="38" height="15"/>
+    <use href="#fish-s" x="90"  y="50"  width="30" height="12"/>
+    <use href="#fish-s" x="150" y="25"  width="34" height="14"/>
+    <use href="#fish-s" x="60"  y="90"  width="40" height="16"/>
+    <use href="#fish-s" x="140" y="100" width="32" height="13"/>
+    <use href="#fish-s" x="210" y="70"  width="36" height="14"/>
+    <use href="#fish-s" x="20"  y="140" width="30" height="12"/>
+    <use href="#fish-s" x="100" y="150" width="38" height="15"/>
+    <use href="#fish-s" x="190" y="130" width="28" height="11"/>
+    <use href="#fish-s" x="260" y="110" width="30" height="12"/>
+    <use href="#fish-s" x="250" y="40"  width="26" height="10"/>
+  </svg>
+
+  <!-- large fish (realistic tuna, SVG) -->
+  <svg class="fish-big" viewBox="0 0 400 150">
+    <defs>
+      <linearGradient id="fishBody" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#0b2638"/><stop offset=".22" stop-color="#1d4a66"/><stop offset=".42" stop-color="#5f8ea6"/>
+        <stop offset=".52" stop-color="#a9c6d2"/><stop offset=".64" stop-color="#d3e4ea"/><stop offset="1" stop-color="#eef5f7"/>
+      </linearGradient>
+      <linearGradient id="fishSun" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0" stop-color="#8BE3E5" stop-opacity=".38"/><stop offset=".5" stop-color="#8BE3E5" stop-opacity="0"/>
+      </linearGradient>
+      <linearGradient id="fishDepth" x1="1" y1="0" x2="0" y2="0">
+        <stop offset=".35" stop-color="#082F43" stop-opacity="0"/><stop offset="1" stop-color="#082F43" stop-opacity=".5"/>
+      </linearGradient>
+      <linearGradient id="finGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2d5a74"/><stop offset="1" stop-color="#0e3045"/></linearGradient>
+      <linearGradient id="tailGrad" x1="1" y1="0" x2="0" y2="0"><stop offset="0" stop-color="#1d4a66"/><stop offset="1" stop-color="#0b2638"/></linearGradient>
+      <radialGradient id="eyeIris" cx=".4" cy=".4" r=".7"><stop offset="0" stop-color="#d3e4ea"/><stop offset="1" stop-color="#1d3b4b"/></radialGradient>
+      <pattern id="scales" width="9" height="7" patternUnits="userSpaceOnUse">
+        <path d="M0 7A4.5 4.5 0 0 1 9 7M-4.5 3.5A4.5 4.5 0 0 1 4.5 3.5M4.5 3.5A4.5 4.5 0 0 1 13.5 3.5" stroke="#fff" stroke-opacity=".55" stroke-width=".6" fill="none"/>
+      </pattern>
+      <clipPath id="fishClip"><path d="M388 80C376 56 338 36 280 31C226 27 172 33 124 50C96 60 76 66 56 69L56 85C76 88 96 94 124 104C172 120 226 126 280 122C338 117 376 102 388 80Z"/></clipPath>
+    </defs>
+    <!-- fins behind the body -->
+    <g fill="url(#finGrad)" opacity=".95">
+      <path d="M276 36C268 20 250 8 222 5C224 16 228 26 234 36Z"/>
+      <path d="M184 40C180 30 172 24 160 22C162 30 164 36 166 42Z"/>
+      <path d="M160 112C152 124 140 132 124 136C130 126 132 118 134 108Z"/>
+      <path d="M268 118C262 130 254 136 246 138C248 130 250 124 252 116Z"/>
+    </g>
+    <g fill="#1d4a66" opacity=".8"><path d="M150 47 L141 33 L137 47Z"/><path d="M136 50 L127 36 L123 50Z"/><path d="M122 55 L113 41 L109 55Z"/><path d="M108 59 L99 45 L95 59Z"/><path d="M94 63 L85 49 L81 63Z"/><path d="M80 66 L71 52 L67 66Z"/><path d="M150 109 L141 122 L137 109Z"/><path d="M136 105 L127 118 L123 105Z"/><path d="M122 100 L113 113 L109 100Z"/><path d="M108 95 L99 108 L95 95Z"/><path d="M94 90 L85 103 L81 90Z"/><path d="M80 86 L71 99 L67 86Z"/></g>
+    <!-- tail -->
+    <path d="M60 69C44 60 28 42 8 12C14 30 18 48 20 62C22 70 22 80 20 88C18 102 14 120 8 140C28 112 44 94 60 85Z" fill="url(#tailGrad)"/>
+    <path d="M58 77L12 22M58 77L16 44M58 77L16 110M58 77L12 132" stroke="#8BE3E5" stroke-opacity=".16" stroke-width=".7" fill="none"/>
+    <!-- body -->
+    <path d="M388 80C376 56 338 36 280 31C226 27 172 33 124 50C96 60 76 66 56 69L56 85C76 88 96 94 124 104C172 120 226 126 280 122C338 117 376 102 388 80Z" fill="url(#fishBody)"/>
+    <g clip-path="url(#fishClip)">
+      <rect x="40" y="20" width="360" height="120" fill="url(#scales)" opacity=".10"/>
+      <g stroke="#061a28" stroke-opacity=".3" stroke-width="3" stroke-linecap="round" fill="none"><path d="M312 34C305 44 316 52 309 62"/><path d="M288 34C281 44 292 52 285 62"/><path d="M264 34C257 44 268 52 261 62"/><path d="M240 34C233 44 244 52 237 62"/><path d="M216 34C209 44 220 52 213 62"/><path d="M192 34C185 44 196 52 189 62"/><path d="M168 34C161 44 172 52 165 62"/><path d="M144 34C137 44 148 52 141 62"/><path d="M120 34C113 44 124 52 117 62"/></g>
+      <path d="M372 76C300 70 200 68 110 74" stroke="#0a2233" stroke-opacity=".3" stroke-width="1" fill="none"/>
+      <path d="M350 98C300 110 220 114 160 102" stroke="#fff" stroke-opacity=".16" stroke-width="6" stroke-linecap="round" fill="none"/>
+      <path d="M335 60C290 54 220 52 170 58" stroke="#fff" stroke-opacity=".22" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <rect x="40" y="20" width="360" height="120" fill="url(#fishSun)"/>
+      <rect x="40" y="20" width="360" height="120" fill="#1AA2AE" opacity=".10"/>
+      <rect x="40" y="20" width="360" height="120" fill="url(#fishDepth)"/>
+    </g>
+    <!-- gill cover, pectoral fin, eye, mouth -->
+    <path d="M326 52C338 70 338 94 324 110C316 96 316 66 326 52Z" fill="#fff" fill-opacity=".10"/>
+    <path d="M326 52C336 70 336 94 324 110" stroke="#0a2233" stroke-opacity=".5" stroke-width="1.4" fill="none"/>
+    <path d="M300 90C290 108 272 122 250 132C262 118 272 106 280 90Z" fill="url(#finGrad)" opacity=".95"/>
+    <circle cx="356" cy="72" r="6.5" fill="#0a1b26"/>
+    <circle cx="356" cy="72" r="6.5" fill="none" stroke="#b9d4dc" stroke-opacity=".8" stroke-width="1.2"/>
+    <circle cx="356" cy="72" r="4.4" fill="url(#eyeIris)"/>
+    <circle cx="356" cy="72" r="2.4" fill="#020a10"/>
+    <circle cx="354.5" cy="70.4" r="1.2" fill="#fff" fill-opacity=".85"/>
+    <path d="M388 81C378 83 369 83 361 82" stroke="#061a28" stroke-opacity=".6" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+  </svg>
+
+  <!-- brain / head illustration (anatomical lateral view, SVG) -->
+  <div class="brain-deco">
+    <svg viewBox="0 0 420 600" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <defs>
+        <linearGradient id="headGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#8BE3E5" stop-opacity=".9"/><stop offset="1" stop-color="#1AA2AE" stop-opacity=".25"/>
+        </linearGradient>
+        <linearGradient id="headFill" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="#8BE3E5" stop-opacity=".13"/><stop offset="1" stop-color="#1AA2AE" stop-opacity=".02"/>
+        </linearGradient>
+        <radialGradient id="brainFill" cx=".4" cy=".28" r=".85">
+          <stop offset="0" stop-color="#8BE3E5" stop-opacity=".6"/><stop offset=".55" stop-color="#1AA2AE" stop-opacity=".32"/><stop offset="1" stop-color="#126078" stop-opacity=".4"/>
+        </radialGradient>
+        <radialGradient id="brainShade" cx=".45" cy=".4" r=".62">
+          <stop offset=".55" stop-color="#041c2a" stop-opacity="0"/><stop offset="1" stop-color="#041c2a" stop-opacity=".6"/>
+        </radialGradient>
+        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="2.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <!-- procedural gyri: dark sulci -->
+        <filter id="sulci" filterUnits="userSpaceOnUse" x="150" y="80" width="250" height="220" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.028 0.05" numOctaves="2" seed="4" result="n"/>
+          <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.016  0 0 0 0 0.125  0 0 0 0 0.165  1 0 0 0 0" result="c"/>
+          <feComponentTransfer in="c" result="r"><feFuncA type="table" tableValues="0 0 0 0 0 0 1 0 0 0 0 0 0"/></feComponentTransfer>
+          <feComposite in="r" in2="SourceAlpha" operator="in"/>
+        </filter>
+        <!-- procedural gyri: lit crowns -->
+        <filter id="crowns" filterUnits="userSpaceOnUse" x="150" y="80" width="250" height="220" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.028 0.05" numOctaves="2" seed="4" result="n"/>
+          <feColorMatrix in="n" type="matrix" values="0 0 0 0 0.545  0 0 0 0 0.89  0 0 0 0 0.9  1 0 0 0 0" result="c"/>
+          <feComponentTransfer in="c" result="r"><feFuncA type="table" tableValues="0 0 0 0 0 0 0 0 1 0 0 0 0"/></feComponentTransfer>
+          <feComposite in="r" in2="SourceAlpha" operator="in"/>
+        </filter>
+        <clipPath id="cerebClip"><path d="M322 232C340 226 370 232 376 250C380 268 352 282 330 276C316 270 312 244 322 232Z"/></clipPath>
+      </defs>
+
+      <!-- head profile (facing left) -->
+      <path d="M380 600C378 520 392 470 395 430C420 380 430 300 420 220C415 110 330 30 240 38C170 44 120 90 112 150C108 176 104 196 100 214C98 226 96 232 90 250C84 266 74 280 70 286C76 294 84 296 90 300C92 308 94 314 90 322C94 330 96 338 96 352C100 372 112 392 130 404C170 420 215 440 240 448C244 480 238 540 232 600"
+            fill="url(#headFill)" stroke="url(#headGrad)" stroke-width="2" filter="url(#glow)"/>
+
+      <!-- spinal cord and vertebrae -->
+      <g stroke="#8BE3E5" stroke-opacity=".4" stroke-width="1.2" fill="rgba(139,227,229,.05)"><rect x="258" y="340" width="30" height="22" rx="7"/><path d="M300 344C318 338 334 342 342 350"/><rect x="258" y="374" width="30" height="22" rx="7"/><path d="M300 378C318 372 334 376 342 384"/><rect x="258" y="408" width="30" height="22" rx="7"/><path d="M300 412C318 406 334 410 342 418"/><rect x="258" y="442" width="30" height="22" rx="7"/><path d="M300 446C318 440 334 444 342 452"/><rect x="258" y="476" width="30" height="22" rx="7"/><path d="M300 480C318 474 334 478 342 486"/><rect x="258" y="510" width="30" height="22" rx="7"/><path d="M300 514C318 508 334 512 342 520"/><rect x="258" y="544" width="30" height="22" rx="7"/><path d="M300 548C318 542 334 546 342 554"/><rect x="258" y="578" width="30" height="22" rx="7"/><path d="M300 582C318 576 334 580 342 588"/></g>
+      <path d="M298 318C296 400 300 500 298 600" stroke="#8BE3E5" stroke-opacity=".75" stroke-width="5" filter="url(#glow)"/>
+      <path d="M298 318C296 400 300 500 298 600" stroke="#041c2a" stroke-opacity=".5" stroke-width="1.2"/>
+
+      <!-- brainstem -->
+      <path d="M282 244C288 262 292 290 290 322L306 322C308 292 306 262 304 240Z" fill="rgba(26,162,174,.45)" stroke="#8BE3E5" stroke-width="1.3" filter="url(#glow)"/>
+
+      <!-- cerebellum with folia -->
+      <path d="M322 232C340 226 370 232 376 250C380 268 352 282 330 276C316 270 312 244 322 232Z" fill="url(#brainFill)" stroke="#8BE3E5" stroke-width="1.5" filter="url(#glow)"/>
+      <g clip-path="url(#cerebClip)" stroke="#041c2a" stroke-opacity=".55" stroke-width="1.1">
+        <path d="M316 238C336 242 362 240 380 244M314 248C336 252 364 250 382 254M314 258C336 262 362 260 382 264M316 268C334 272 356 270 376 274"/>
+      </g>
+
+      <!-- cerebrum -->
+      <path d="M166 192C158 142 196 100 252 92C312 84 366 112 378 166C384 196 370 214 346 222C330 228 318 226 306 232C296 246 276 250 262 242C250 254 224 258 206 244C196 236 190 228 180 226C170 222 168 208 166 192Z" fill="url(#brainFill)" stroke="#8BE3E5" stroke-width="1.8" filter="url(#glow)"/>
+      <path d="M166 192C158 142 196 100 252 92C312 84 366 112 378 166C384 196 370 214 346 222C330 228 318 226 306 232C296 246 276 250 262 242C250 254 224 258 206 244C196 236 190 228 180 226C170 222 168 208 166 192Z" fill="#000" filter="url(#sulci)" opacity=".5"/>
+      <path d="M166 192C158 142 196 100 252 92C312 84 366 112 378 166C384 196 370 214 346 222C330 228 318 226 306 232C296 246 276 250 262 242C250 254 224 258 206 244C196 236 190 228 180 226C170 222 168 208 166 192Z" fill="#000" filter="url(#crowns)" opacity=".3"/>
+      <path d="M166 192C158 142 196 100 252 92C312 84 366 112 378 166C384 196 370 214 346 222C330 228 318 226 306 232C296 246 276 250 262 242C250 254 224 258 206 244C196 236 190 228 180 226C170 222 168 208 166 192Z" fill="url(#brainShade)"/>
+
+      <!-- main fissures: Sylvian, central, parieto-occipital -->
+      <g stroke="#041c2a" stroke-opacity=".85" stroke-width="2.4" fill="none">
+        <path d="M212 216C240 208 268 198 302 186"/>
+        <path d="M276 96C268 126 262 148 252 176C246 190 242 198 240 206"/>
+        <path d="M340 108C336 140 342 160 350 184"/>
+      </g>
+      <g stroke="#8BE3E5" stroke-opacity=".5" stroke-width=".8" fill="none">
+        <path d="M212 213C240 205 268 195 302 183"/>
+        <path d="M273 96C265 126 259 148 249 176"/>
+      </g>
+
+      <!-- neural nodes -->
+      <g fill="#8BE3E5" opacity=".85">
+        <circle cx="230" cy="122" r="2.6"/><circle cx="305" cy="140" r="3"/><circle cx="262" cy="200" r="2.6"/><circle cx="345" cy="195" r="2.6"/><circle cx="200" cy="170" r="2.2"/>
+      </g>
+      <path d="M230 122L305 140L262 200L345 195M200 170L262 200" stroke="#8BE3E5" stroke-opacity=".35" stroke-width=".8"/>
+    </svg>
+  </div>
+
+  <!-- seabed left: rocks + kelp -->
+  <div class="seabed-left">
+    <svg viewBox="0 0 620 430" preserveAspectRatio="xMinYMax slice">
+      <defs>
+        <linearGradient id="rock" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0c3a4d"/><stop offset="1" stop-color="#041a26"/></linearGradient>
+      </defs>
+      <path d="M0 140c40-20 80-4 110 22 30-10 70-6 96 18 30-4 60 10 74 38 40 4 70 34 74 70 20 20 20 60 20 142H0z" fill="url(#rock)"/>
+      <path d="M0 300c50-14 110-6 150 30s100 20 150 60l40 40H0z" fill="#06222f" opacity=".9"/>
+      <g stroke="#0e5a62" stroke-width="5" fill="none" stroke-linecap="round">
+        <path class="kelp" d="M110 330c-14-40 10-70-6-110"/>
+        <path class="kelp d2" d="M150 340c10-36-8-60 6-96"/>
+        <path class="kelp" d="M200 360c-8-30 8-50-2-80"/>
+      </g>
+      <g fill="#14707a" opacity=".5"><circle cx="60" cy="250" r="9"/><circle cx="90" cy="280" r="6"/><circle cx="230" cy="300" r="7"/></g>
+    </svg>
+  </div>
+
+  <!-- seabed right: rocks + coral -->
+  <div class="seabed-right">
+    <svg viewBox="0 0 540 430" preserveAspectRatio="xMaxYMax slice">
+      <path d="M540 120c-40-10-80 10-100 40-40-6-76 20-84 56-40 8-64 44-60 84-20 30-20 70-20 130h264z" fill="url(#rock)"/>
+      <g stroke="#2b8f9a" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8">
+        <path class="kelp" d="M400 300c-6-40 6-60-4-100M396 240c-20-10-30-30-30-50M398 220c16-12 30-24 32-46M392 270c-14-4-26-16-30-30"/>
+        <path class="kelp d2" d="M300 350c4-30-6-52 4-80M304 300c-14-8-24-24-24-40M306 290c12-8 22-18 24-34"/>
+      </g>
+      <g stroke="#14707a" stroke-width="6" fill="none" stroke-linecap="round">
+        <path class="kelp" d="M470 330c10-40-6-70 6-110"/>
+        <path class="kelp d2" d="M500 340c-8-36 8-60-4-96"/>
+      </g>
+    </svg>
+  </div>
+
+  <div id="bubbles"></div>
+</div>
+
+<!-- ============ TOP NAVIGATION ============ -->
+<header class="topbar">
+  <div class="brand">
+    <svg aria-hidden="true"><use href="#i-wave"/></svg>
+    <span>MINAMATA DISEASE</span>
+  </div>
+  <div class="nav-right">
+    <span>Scientific Knowledge Test</span>
+    <i class="sep" aria-hidden="true"></i>
+    <svg aria-hidden="true"><use href="#i-brain"/></svg>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ LANDING PAGE ============ -->
+  <section id="screen-home" class="screen active home" aria-labelledby="home-title">
+    <h1 class="title" id="home-title">Minamata Disease</h1>
+    <p class="subtitle">TEST YOUR KNOWLEDGE</p>
+    <svg class="title-wave" aria-hidden="true"><use href="#i-wave-small"/></svg>
+
+    <div class="cards" role="group" aria-label="Choose a quiz mode">
+      <button type="button" class="mode-card" id="card-qcm" data-mode="qcm" aria-pressed="false">
+        <span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+        <svg class="icon" aria-hidden="true"><use href="#i-clipboard"/></svg>
+        <h2>QCM</h2>
+        <p>Multiple choice questions</p>
+        <span class="go" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>
+        <svg class="wave-deco" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40C60 10 110 10 170 36s110 20 230-14v38H0z" fill="rgba(26,162,174,.35)"/></svg>
+      </button>
+      <button type="button" class="mode-card" id="card-tf" data-mode="tf" aria-pressed="false">
+        <span class="check" aria-hidden="true"><svg><use href="#i-check"/></svg></span>
+        <svg class="icon" aria-hidden="true"><use href="#i-head"/></svg>
+        <h2>True or False</h2>
+        <p>Test your understanding</p>
+        <span class="go" aria-hidden="true"><svg><use href="#i-arrow"/></svg></span>
+        <svg class="wave-deco" viewBox="0 0 400 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40C60 10 110 10 170 36s110 20 230-14v38H0z" fill="rgba(26,162,174,.35)"/></svg>
+      </button>
+    </div>
+
+    <button type="button" class="btn-start" id="btn-start">START QUIZ <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+    <p class="home-hint" id="home-hint" aria-live="polite"></p>
+  </section>
+
+  <!-- ============ QUIZ SCREEN ============ -->
+  <section id="screen-quiz" class="screen quiz-wrap" aria-label="Quiz">
+    <div class="panel">
+      <div class="quiz-top">
+        <button type="button" class="btn btn-ghost" id="btn-quit"><svg aria-hidden="true"><use href="#i-back"/></svg> Home</button>
+        <span class="mode-tag" id="q-mode"></span>
+        <span class="score-pill">Score <b id="q-score">0</b> pts</span>
+      </div>
+
+      <div class="meta-row">
+        <span class="counter" id="q-counter">Question 1 / 8</span>
+        <div class="timer-box" id="timer-box">
+          <label class="switch">
+            <input type="checkbox" id="timer-toggle" checked>
+            <span class="track" aria-hidden="true"></span>
+            <span>Timer</span>
+          </label>
+          <span class="timer-pill" id="timer-pill" role="timer" aria-live="off">25s</span>
+        </div>
+      </div>
+      <div class="bar" id="q-progress" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="q-bar"></div></div>
+      <div class="bar time" id="time-bar" aria-hidden="true"><div id="time-fill"></div></div>
+
+      <h2 class="question" id="q-text" tabindex="-1"></h2>
+
+      <div class="options" id="q-options" role="radiogroup" aria-labelledby="q-text"></div>
+
+      <div class="tf-row" id="q-tf">
+        <button type="button" class="tf-btn" data-val="true"><svg aria-hidden="true"><use href="#i-check"/></svg>True</button>
+        <button type="button" class="tf-btn" data-val="false"><svg aria-hidden="true"><use href="#i-cross"/></svg>False</button>
+      </div>
+
+      <div class="feedback" id="q-feedback" aria-live="polite" hidden></div>
+
+      <div class="nav-row">
+        <button type="button" class="btn" id="btn-prev"><svg aria-hidden="true"><use href="#i-back"/></svg> Previous</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn btn-primary" id="btn-submit">Submit answer</button>
+        <button type="button" class="btn btn-primary" id="btn-next">Next <svg aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      </div>
+      <p class="key-hint" id="key-hint"></p>
+    </div>
+  </section>
+
+  <!-- ============ RESULTS SCREEN ============ -->
+  <section id="screen-result" class="screen result-wrap" aria-label="Results">
+    <div class="panel">
+      <div class="result-head">
+        <div class="ring">
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#27e1ea"/><stop offset="1" stop-color="#8BE3E5"/></linearGradient></defs>
+            <circle class="bg" cx="60" cy="60" r="52" fill="none" stroke-width="8"/>
+            <circle class="fg" id="ring-fg" cx="60" cy="60" r="52" fill="none" stroke-width="8" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+          </svg>
+          <div class="pct" id="r-pct">0%</div>
+        </div>
+        <span class="badge" id="r-badge"></span>
+        <h2 id="r-title" tabindex="-1">Quiz complete</h2>
+        <p id="r-msg"></p>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><b id="r-score">0</b><span id="r-score-max">Points</span></div>
+        <div class="stat g"><b id="r-correct">0</b><span>Correct</span></div>
+        <div class="stat r"><b id="r-wrong">0</b><span>Incorrect</span></div>
+      </div>
+
+      <div class="result-actions">
+        <button type="button" class="btn btn-primary" id="btn-retry">Retry this mode</button>
+        <button type="button" class="btn" id="btn-home">Back to home</button>
+      </div>
+
+      <div class="review">
+        <h3>Review of your answers</h3>
+        <div id="r-review"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Landing-page corner details -->
+<div class="corner-quote" aria-hidden="true">Cleaner environment…<br>Healthier future</div>
+<div class="corner-icons" aria-hidden="true">
+  <svg><use href="#i-leaf"/></svg><i></i><svg><use href="#i-drop"/></svg><i></i><svg><use href="#i-flask"/></svg>
+</div>
+
+<footer class="site-footer">
+  <svg class="credit-wave" aria-hidden="true"><use href="#i-wave-small"/></svg>
+  <div class="credit">Developed by Amara Fadoua</div>
+</footer>
+
+<!-- Mode selection dialog (opens if START QUIZ is pressed with no mode chosen) -->
+<div class="overlay" id="mode-dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-title">
+  <div class="dialog">
+    <h2 id="dlg-title">Choose a mode</h2>
+    <p>Select how you would like to test your knowledge.</p>
+    <button type="button" class="btn btn-primary" data-pick="qcm">QCM — 8 questions</button>
+    <button type="button" class="btn btn-primary" data-pick="tf">True or False — 6 statements</button>
+    <button type="button" class="btn btn-ghost" id="dlg-cancel">Cancel</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   QUESTION BANKS  (edit freely: keep the same structure)
+   ========================================================= */
+
+// QCM: 3 or 4 options, "answer" = index (0-based) of the correct option
+const QCM = [
+  {
+    q: "What is the main cause of Minamata disease?",
+    options: [
+      "Inhalation of coal dust",
+      "Eating fish and shellfish contaminated with methylmercury",
+      "A viral infection",
+      "Drinking water with high calcium content"
+    ],
+    answer: 1,
+    exp: "Mercury released in industrial wastewater is converted in the aquatic environment into methylmercury, which accumulates in fish and shellfish. People who eat them regularly are exposed."
+  },
+  {
+    q: "Which process is identified in the presentation as the way methylmercury reached humans?",
+    options: [
+      "Food-chain accumulation",
+      "Direct skin absorption",
+      "Respiratory transmission",
+      "Person-to-person transmission"
+    ],
+    answer: 0,
+    exp: "Methylmercury accumulates and becomes more concentrated along the food chain (biomagnification). Humans were exposed by eating contaminated fish and shellfish, not through skin, air or contact with other people."
+  },
+  {
+    q: "Why can the MeHg–cysteine complex cross the blood–brain barrier?",
+    options: [
+      "It destroys the endothelial cells of the barrier immediately",
+      "It is converted into glutathione before entering the brain",
+      "It resembles an amino acid and can use transporters such as LAT1",
+      "It passes exclusively through gaps between endothelial cells"
+    ],
+    answer: 2,
+    exp: "The MeHg–cysteine complex resembles the amino acid methionine. This molecular mimicry lets the LAT1 amino acid transporter carry it across the blood–brain barrier into the brain."
+  },
+  {
+    q: "Methylmercury binds to the thiol (–SH) groups of proteins. What is a likely consequence?",
+    options: [
+      "All proteins become permanently activated",
+      "Protein structure or function may be disrupted",
+      "Protein synthesis necessarily doubles",
+      "All cellular enzymes are immediately destroyed"
+    ],
+    answer: 1,
+    exp: "Thiol groups are important for the structure and activity of many proteins. When methylmercury binds to them, protein structure or function may be disrupted. This does not mean that all proteins or enzymes are affected equally."
+  },
+  {
+    q: "How can mitochondrial dysfunction contribute to neuronal injury?",
+    options: [
+      "By increasing ATP production and eliminating ROS",
+      "By preventing all calcium from entering cells",
+      "By reducing ATP production and increasing reactive oxygen species",
+      "By converting methylmercury into a harmless amino acid"
+    ],
+    answer: 2,
+    exp: "Damaged mitochondria make less ATP and leak more electrons, which form reactive oxygen species. Energy shortage and oxidative stress together can injure neurons."
+  },
+  {
+    q: "What can oxidative stress damage?",
+    options: [
+      "Lipids, proteins, and DNA",
+      "Only carbohydrates",
+      "Only vitamins"
+    ],
+    answer: 0,
+    exp: "Excess reactive oxygen species can oxidize membrane lipids, proteins and DNA, which impairs cell function and can lead to cell death."
+  },
+  {
+    q: "Which of the following is listed as a neurological effect of methylmercury?",
+    options: [
+      "Ataxia",
+      "Anemia",
+      "Kidney stones",
+      "Arthritis"
+    ],
+    answer: 0,
+    exp: "Ataxia, a loss of coordination and balance, is a typical neurological effect of methylmercury. Anemia, kidney stones and arthritis are not neurological effects."
+  },
+  {
+    q: "Which measure is the most effective way to prevent Minamata-type poisoning?",
+    options: [
+      "Reducing industrial mercury pollution and monitoring seafood contamination",
+      "Cooking contaminated fish for a longer time",
+      "Adding more salt to seafood",
+      "Rinsing fish with tap water before eating"
+    ],
+    answer: 0,
+    exp: "Methylmercury is not destroyed by cooking, salting or rinsing. Prevention relies on stopping mercury releases at the source and monitoring seafood to limit human exposure."
+  }
+];
+
+// TRUE / FALSE: "answer" is true or false
+const TF = [
+  { q: "Methylmercury can cross the blood–brain barrier (BBB).", answer: true,
+    exp: "Methylmercury, notably as a cysteine complex that mimics methionine and uses the LAT1 transporter, crosses the BBB and accumulates in the brain." },
+  { q: "Glutathione (GSH) helps protect cells against oxidative stress.", answer: true,
+    exp: "Glutathione is a major antioxidant. Its thiol group helps neutralize reactive oxygen species and conjugate toxic compounds." },
+  { q: "Oxidative stress can damage proteins and DNA.", answer: true,
+    exp: "Excess reactive oxygen species oxidize proteins, lipids and DNA, which impairs cell function and can lead to cell death." },
+  { q: "Mitochondrial dysfunction can decrease ATP production.", answer: true,
+    exp: "A damaged respiratory chain produces less ATP and leaks more electrons, which also increases ROS formation." },
+  { q: "Ataxia causes problems with balance and coordination.", answer: true,
+    exp: "Ataxia is a loss of coordination of movement. It is a typical sign of methylmercury poisoning and affects balance and walking." },
+  { q: "Methylmercury can affect memory, attention, and learning.", answer: true,
+    exp: "Methylmercury damages neurons and glial cells, and these cognitive functions can be impaired, especially after prolonged or developmental exposure." }
+];
+
+/* =========================================================
+   APPLICATION
+   ========================================================= */
+(function () {
+  'use strict';
+
+  var TIME_PER_Q = 25;       // seconds per QCM question
+  var POINTS = 10;           // points per correct answer
+  var LETTERS = ['A', 'B', 'C', 'D'];
+
+  var $ = function (s) { return document.querySelector(s); };
+  var el = {
+    home: $('#screen-home'), quiz: $('#screen-quiz'), result: $('#screen-result'),
+    cardQcm: $('#card-qcm'), cardTf: $('#card-tf'), start: $('#btn-start'), hint: $('#home-hint'),
+    dialog: $('#mode-dialog'), dlgCancel: $('#dlg-cancel'),
+    quit: $('#btn-quit'), modeTag: $('#q-mode'), score: $('#q-score'), counter: $('#q-counter'),
+    timerBox: $('#timer-box'), timerToggle: $('#timer-toggle'), timerPill: $('#timer-pill'),
+    progress: $('#q-progress'), bar: $('#q-bar'), timeBar: $('#time-bar'), timeFill: $('#time-fill'),
+    text: $('#q-text'), options: $('#q-options'), tf: $('#q-tf'), feedback: $('#q-feedback'),
+    prev: $('#btn-prev'), submit: $('#btn-submit'), next: $('#btn-next'), keyHint: $('#key-hint'),
+    rPct: $('#r-pct'), rRing: $('#ring-fg'), rBadge: $('#r-badge'), rTitle: $('#r-title'), rMsg: $('#r-msg'),
+    rScore: $('#r-score'), rScoreMax: $('#r-score-max'), rCorrect: $('#r-correct'), rWrong: $('#r-wrong'),
+    rReview: $('#r-review'), retry: $('#btn-retry'), homeBtn: $('#btn-home')
+  };
+
+  var state = {
+    chosenMode: null,   // mode picked on the landing page
+    mode: null,         // mode currently being played
+    index: 0,
+    answers: [],        // null | { choice, correct, timedOut }
+    timeLeft: [],
+    pending: null,      // option selected but not yet submitted (QCM)
+    timerOn: true,
+    timerId: null
+  };
+
+  function bank() { return state.mode === 'qcm' ? QCM : TF; }
+  function modeName(m) { return m === 'qcm' ? 'QCM' : 'True or False'; }
+
+  /* ---------- Screens ---------- */
+  function showScreen(name) {
+    clearTimer();
+    ['home', 'quiz', 'result'].forEach(function (n) { el[n].classList.toggle('active', n === name); });
+    document.body.setAttribute('data-screen', name);
+    window.scrollTo(0, 0);
+  }
+
+  /* ---------- Landing page ---------- */
+  function selectMode(mode) {
+    state.chosenMode = mode;
+    el.cardQcm.setAttribute('aria-pressed', String(mode === 'qcm'));
+    el.cardTf.setAttribute('aria-pressed', String(mode === 'tf'));
+    el.hint.textContent = modeName(mode) + ' selected — press START QUIZ.';
+  }
+  function openDialog() {
+    el.dialog.classList.add('open');
+    el.dialog.querySelector('[data-pick]').focus();
+  }
+  function closeDialog() {
+    el.dialog.classList.remove('open');
+    el.start.focus();
+  }
+
+  /* ---------- Starting / restarting ---------- */
+  function startQuiz(mode) {
+    state.mode = mode;
+    state.index = 0;
+    state.answers = bank().map(function () { return null; });
+    state.timeLeft = bank().map(function () { return TIME_PER_Q; });
+    state.pending = null;
+    el.modeTag.textContent = modeName(mode);
+    el.timerBox.style.display = mode === 'qcm' ? '' : 'none';
+    el.options.style.display = mode === 'qcm' ? '' : 'none';
+    el.tf.style.display = mode === 'tf' ? '' : 'none';
+    el.keyHint.textContent = mode === 'qcm'
+      ? 'Keyboard: A–D or 1–4 to choose · Enter to submit / continue · ← → to navigate'
+      : 'Keyboard: T = True · F = False · Enter to continue · ← → to navigate';
+    showScreen('quiz');
+    renderQuestion(true);
+  }
+
+  /* ---------- Scoring helpers ---------- */
+  function correctCount() {
+    return state.answers.reduce(function (n, a) { return n + (a && a.correct ? 1 : 0); }, 0);
+  }
+  function answeredCount() {
+    return state.answers.reduce(function (n, a) { return n + (a ? 1 : 0); }, 0);
+  }
+
+  /* ---------- Rendering a question ---------- */
+  function renderQuestion(focusText) {
+    var i = state.index, item = bank()[i], total = bank().length, ans = state.answers[i];
+
+    el.counter.textContent = 'Question ' + (i + 1) + ' / ' + total;
+    el.score.textContent = correctCount() * POINTS;
+    var pct = Math.round(answeredCount() / total * 100);
+    el.bar.style.width = pct + '%';
+    el.progress.setAttribute('aria-valuenow', String(pct));
+    el.text.textContent = item.q;
+
+    if (state.mode === 'qcm') renderOptions(item, ans);
+    else renderTF(ans, item);
+
+    renderFeedback(item, ans);
+
+    el.prev.disabled = i === 0;
+    el.submit.style.display = (state.mode === 'qcm' && !ans) ? '' : 'none';
+    el.submit.disabled = state.pending === null;
+    el.next.style.display = (state.mode === 'qcm' && !ans) ? 'none' : '';
+    el.next.disabled = !ans;
+    el.next.firstChild.nodeValue = i === total - 1 ? 'See results ' : 'Next ';
+
+    updateTimerUi();
+    if (state.mode === 'qcm' && state.timerOn && !ans) startTimer();
+    if (focusText) el.text.focus({ preventScroll: true });
+  }
+
+  function renderOptions(item, ans) {
+    el.options.innerHTML = '';
+    item.options.forEach(function (text, k) {
+      var b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'option';
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', String(!ans && state.pending === k));
+      b.dataset.index = k;
+      var l = document.createElement('span'); l.className = 'letter'; l.textContent = LETTERS[k];
+      var t = document.createElement('span'); t.textContent = text;
+      b.appendChild(l); b.appendChild(t);
+      if (ans) {
+        b.disabled = true;
+        if (k === item.answer) b.classList.add('correct');
+        else if (k === ans.choice) b.classList.add('wrong');
+        else b.classList.add('dim');
+      }
+      el.options.appendChild(b);
+    });
+  }
+
+  function renderTF(ans, item) {
+    Array.prototype.forEach.call(el.tf.querySelectorAll('.tf-btn'), function (b) {
+      var val = b.dataset.val === 'true';
+      b.classList.remove('correct', 'wrong', 'dim');
+      b.disabled = !!ans;
+      if (ans) {
+        if (val === item.answer) b.classList.add('correct');
+        else if (val === ans.choice) b.classList.add('wrong');
+        else b.classList.add('dim');
+      }
+    });
+  }
+
+  function correctText(item) {
+    return state.mode === 'qcm'
+      ? LETTERS[item.answer] + '. ' + item.options[item.answer]
+      : (item.answer ? 'True' : 'False');
+  }
+
+  function renderFeedback(item, ans) {
+    if (!ans) { el.feedback.hidden = true; el.feedback.innerHTML = ''; return; }
+    el.feedback.hidden = false;
+    el.feedback.className = 'feedback ' + (ans.correct ? 'good' : 'bad');
+    el.feedback.innerHTML = '';
+    var v = document.createElement('p'); v.className = 'verdict';
+    v.textContent = ans.timedOut ? "Time's up!" : ans.correct ? 'Correct! +' + POINTS + ' points' : 'Incorrect';
+    el.feedback.appendChild(v);
+    if (!ans.correct) {
+      var c = document.createElement('p'); c.className = 'answer-line';
+      c.textContent = 'Correct answer: ' + correctText(item);
+      el.feedback.appendChild(c);
+    }
+    var e = document.createElement('p'); e.textContent = item.exp;
+    el.feedback.appendChild(e);
+  }
+
+  /* ---------- Answering ---------- */
+  function pickOption(k) {
+    if (state.mode !== 'qcm' || state.answers[state.index]) return;
+    state.pending = k;
+    Array.prototype.forEach.call(el.options.children, function (b, idx) {
+      b.setAttribute('aria-checked', String(idx === k));
+    });
+    el.submit.disabled = false;
+  }
+
+  function submitQcm() {
+    var i = state.index;
+    if (state.mode !== 'qcm' || state.answers[i] || state.pending === null) return;
+    clearTimer();
+    state.answers[i] = { choice: state.pending, correct: state.pending === QCM[i].answer, timedOut: false };
+    state.pending = null;
+    renderQuestion(false);
+    el.next.focus({ preventScroll: true });
+  }
+
+  function answerTf(val) {
+    var i = state.index;
+    if (state.mode !== 'tf' || state.answers[i]) return;   // no duplicate scoring
+    state.answers[i] = { choice: val, correct: val === TF[i].answer, timedOut: false };
+    renderQuestion(false);
+    el.next.focus({ preventScroll: true });
+  }
+
+  function timeOut() {
+    var i = state.index;
+    if (state.answers[i]) return;
+    clearTimer();
+    state.answers[i] = { choice: null, correct: false, timedOut: true };
+    state.pending = null;
+    renderQuestion(false);
+    el.next.focus({ preventScroll: true });
+  }
+
+  /* ---------- Navigation ---------- */
+  function go(delta) {
+    var n = state.index + delta;
+    if (n < 0 || n >= bank().length) return;
+    clearTimer();
+    state.index = n;
+    state.pending = null;
+    renderQuestion(true);
+  }
+  function goNext() {
+    if (!state.answers[state.index]) return;
+    if (state.index === bank().length - 1) finish();
+    else go(1);
+  }
+
+  /* ---------- Timer ---------- */
+  function clearTimer() {
+    if (state.timerId) { clearInterval(state.timerId); state.timerId = null; }
+  }
+  function updateTimerUi() {
+    var i = state.index;
+    var active = state.mode === 'qcm' && state.timerOn && !state.answers[i];
+    el.timerPill.style.visibility = (state.mode === 'qcm' && state.timerOn) ? 'visible' : 'hidden';
+    el.timeBar.style.display = (state.mode === 'qcm' && state.timerOn) ? '' : 'none';
+    var left = state.timeLeft[i];
+    el.timerPill.textContent = active || !state.answers[i] ? left + 's' : '—';
+    el.timerPill.classList.toggle('warn', active && left <= 5);
+    el.timeBar.classList.toggle('low', active && left <= 5);
+    el.timeFill.style.width = (state.answers[i] ? 0 : left / TIME_PER_Q * 100) + '%';
+  }
+  function startTimer() {
+    clearTimer();
+    var i = state.index;
+    updateTimerUi();
+    state.timerId = setInterval(function () {
+      if (state.index !== i || state.answers[i]) { clearTimer(); return; }
+      state.timeLeft[i] -= 1;
+      updateTimerUi();
+      if (state.timeLeft[i] <= 0) timeOut();
+    }, 1000);
+  }
+
+  /* ---------- Results ---------- */
+  function finish() {
+    clearTimer();
+    var total = bank().length, correct = correctCount(), wrong = total - correct;
+    var pct = Math.round(correct / total * 100);
+    var tier = pct >= 90 ? ['Mercury Expert', 'Outstanding! You clearly understand how methylmercury reaches and damages the nervous system.']
+             : pct >= 70 ? ['Toxicology Explorer', 'Well done! You have a solid grasp of the main mechanisms. A quick review will make it even stronger.']
+             : pct >= 50 ? ['Science Learner', 'Good effort! You know the basics. Read the explanations below to consolidate the mechanisms.']
+             :             ['Keep Exploring', 'Keep going! Methylmercury toxicity is complex. Read the explanations below and try again.'];
+
+    el.rBadge.textContent = tier[0];
+    el.rMsg.textContent = tier[1];
+    el.rTitle.textContent = modeName(state.mode) + ' complete';
+    el.rScore.textContent = correct * POINTS + ' / ' + total * POINTS;
+    el.rScoreMax.textContent = 'Points';
+    el.rCorrect.textContent = correct;
+    el.rWrong.textContent = wrong;
+    el.rPct.textContent = pct + '%';
+    el.rRing.style.strokeDashoffset = '326.7';
+
+    el.rReview.innerHTML = '';
+    bank().forEach(function (item, i) {
+      var a = state.answers[i];
+      var box = document.createElement('div');
+      box.className = 'review-item ' + (a && a.correct ? 'good' : 'bad');
+      var yours;
+      if (!a || a.choice === null) yours = a && a.timedOut ? 'No answer (time ran out)' : 'No answer';
+      else yours = state.mode === 'qcm' ? LETTERS[a.choice] + '. ' + item.options[a.choice] : (a.choice ? 'True' : 'False');
+
+      var q = document.createElement('p'); q.className = 'rq'; q.textContent = (i + 1) + '. ' + item.q;
+      var p1 = document.createElement('p'); var s1 = document.createElement('strong'); s1.textContent = 'Your answer: ';
+      p1.appendChild(s1); p1.appendChild(document.createTextNode(yours + (a && a.correct ? '  ✓' : '  ✗')));
+      var p2 = document.createElement('p'); var s2 = document.createElement('strong'); s2.textContent = 'Correct answer: ';
+      p2.appendChild(s2); p2.appendChild(document.createTextNode(correctText(item)));
+      var p3 = document.createElement('p'); p3.className = 'exp'; p3.textContent = item.exp;
+      [q, p1, p2, p3].forEach(function (n) { box.appendChild(n); });
+      el.rReview.appendChild(box);
+    });
+
+    showScreen('result');
+    el.rTitle.focus({ preventScroll: true });
+    setTimeout(function () {
+      el.rRing.style.strokeDashoffset = String(326.7 * (1 - pct / 100));
+    }, 80);
+  }
+
+  function goHome() {
+    clearTimer();
+    state.mode = null;
+    showScreen('home');
+  }
+
+  /* ---------- Event wiring ---------- */
+  el.cardQcm.addEventListener('click', function () { selectMode('qcm'); });
+  el.cardTf.addEventListener('click', function () { selectMode('tf'); });
+  el.start.addEventListener('click', function () {
+    if (state.chosenMode) startQuiz(state.chosenMode); else openDialog();
+  });
+  el.dialog.addEventListener('click', function (e) {
+    var pick = e.target.closest('[data-pick]');
+    if (pick) { selectMode(pick.dataset.pick); el.dialog.classList.remove('open'); startQuiz(pick.dataset.pick); }
+    else if (e.target === el.dialog) closeDialog();
+  });
+  el.dlgCancel.addEventListener('click', closeDialog);
+
+  el.options.addEventListener('click', function (e) {
+    var b = e.target.closest('.option');
+    if (b && !b.disabled) pickOption(Number(b.dataset.index));
+  });
+  el.tf.addEventListener('click', function (e) {
+    var b = e.target.closest('.tf-btn');
+    if (b && !b.disabled) answerTf(b.dataset.val === 'true');
+  });
+  el.submit.addEventListener('click', submitQcm);
+  el.next.addEventListener('click', goNext);
+  el.prev.addEventListener('click', function () { go(-1); });
+  el.quit.addEventListener('click', function () {
+    if (answeredCount() === 0 || confirm('Leave the quiz? Your progress will be lost.')) goHome();
+  });
+  el.timerToggle.addEventListener('change', function () {
+    state.timerOn = el.timerToggle.checked;
+    if (!state.timerOn) clearTimer();
+    renderQuestion(false);
+  });
+  el.retry.addEventListener('click', function () { startQuiz(state.mode); });
+  el.homeBtn.addEventListener('click', goHome);
+
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    // dialog: Escape closes, Tab stays inside
+    if (el.dialog.classList.contains('open')) {
+      if (e.key === 'Escape') { closeDialog(); return; }
+      if (e.key === 'Tab') {
+        var f = el.dialog.querySelectorAll('button');
+        var first = f[0], last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+      return;
+    }
+    if (!el.quiz.classList.contains('active')) return;
+    if (e.target && e.target.tagName === 'INPUT') return;
+
+    var k = e.key.toLowerCase();
+    if (e.key === 'ArrowRight') { if (!el.next.disabled && el.next.style.display !== 'none') { e.preventDefault(); goNext(); } return; }
+    if (e.key === 'ArrowLeft')  { if (!el.prev.disabled) { e.preventDefault(); go(-1); } return; }
+
+    if (state.mode === 'qcm') {
+      var idx = 'abcd'.indexOf(k);
+      if (idx === -1 && k >= '1' && k <= '4') idx = Number(k) - 1;
+      if (idx > -1 && k.length === 1) { if (idx < QCM[state.index].options.length) pickOption(idx); return; }
+      if (e.key === 'Enter' && !(e.target && e.target.tagName === 'BUTTON')) {
+        e.preventDefault();
+        if (!state.answers[state.index]) submitQcm(); else goNext();
+      }
+    } else {
+      if (k === 't') answerTf(true);
+      else if (k === 'f') answerTf(false);
+      else if (e.key === 'Enter' && !(e.target && e.target.tagName === 'BUTTON')) {
+        e.preventDefault(); goNext();
+      }
+    }
+  });
+
+  /* ---------- Decorative bubbles ---------- */
+  (function bubbles() {
+    var box = $('#bubbles');
+    for (var n = 0; n < 22; n++) {
+      var b = document.createElement('span');
+      var s = 4 + Math.random() * 16;
+      b.className = 'bubble';
+      b.style.width = b.style.height = s + 'px';
+      b.style.left = (Math.random() * 100) + '%';
+      b.style.animationDuration = (12 + Math.random() * 16) + 's';
+      b.style.animationDelay = (-Math.random() * 24) + 's';
+      box.appendChild(b);
+    }
+  })();
+
+  // Safety: stop the timer whenever the page is hidden for good
+  window.addEventListener('pagehide', clearTimer);
+})();
+</script>
+</body>
+</html>
